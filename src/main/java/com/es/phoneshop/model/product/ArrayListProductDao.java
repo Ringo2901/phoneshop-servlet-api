@@ -6,7 +6,6 @@ import java.util.Currency;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;

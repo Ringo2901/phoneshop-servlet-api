@@ -1,4 +1,8 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao.impl;
+
+import com.es.phoneshop.model.product.model.Product;
+import com.es.phoneshop.model.product.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.dao.ProductDao;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,32 +13,35 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
-    private long currentId=1;
+    private long currentId = 1;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public ArrayListProductDao() {
         products = new ArrayList<Product>();
         setSampleProducts();
     }
+
     @Override
     public Product getProduct(Long id) {
-        if (id!=null) {
+        if (id != null) {
             readWriteLock.readLock().lock();
             Product product = products.stream()
                     .filter(product1 -> id.equals(product1.getId()))
                     .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException("Product with given id was not found"));
+                    .orElseThrow(() -> new ProductNotFoundException("Product with id = " + id + " was not found"));
             readWriteLock.readLock().unlock();
             return product;
-        }else throw new IllegalArgumentException("Id is null");
+        } else {
+            throw new IllegalArgumentException("Id is null");
+        }
     }
 
     @Override
     public List<Product> findProducts() {
         readWriteLock.readLock().lock();
-        List<Product> result= products.stream()
-                .filter(product -> product.getPrice()!=null)
-                .filter((product -> product.getStock()>0))
+        List<Product> result = products.stream()
+                .filter(product -> product.getPrice() != null)
+                .filter((product -> product.getStock() > 0))
                 .toList();
         readWriteLock.readLock().unlock();
         return result;
@@ -43,13 +50,17 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void save(Product product) {
         readWriteLock.writeLock().lock();
-        if (product.getId()!=null) {
-                    products.stream()
+        if (product.getId() != null) {
+            products.stream()
                     .filter(product1 -> product1.getId().equals(product.getId()))
                     .findAny()
-                    .ifPresentOrElse(product1 -> {products.set(products.indexOf(product1),product);},
-                            () -> {products.add(product);});
-        }else{
+                    .ifPresentOrElse(product1 -> {
+                                products.set(products.indexOf(product1), product);
+                            },
+                            () -> {
+                                products.add(product);
+                            });
+        } else {
             product.setId(currentId++);
             products.add(product);
         }
@@ -58,14 +69,16 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void delete(Long id) {
-        if (id!=null) {
+        if (id != null) {
             readWriteLock.writeLock().lock();
             products.removeIf(product -> id.equals(product.getId()));
             readWriteLock.writeLock().unlock();
-        }else throw new IllegalArgumentException("Id is null");
+        } else {
+            throw new IllegalArgumentException("Id is null");
+        }
     }
 
-    private void setSampleProducts(){
+    private void setSampleProducts() {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));

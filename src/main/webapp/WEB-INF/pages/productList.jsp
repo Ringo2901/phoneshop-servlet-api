@@ -33,9 +33,15 @@
         <td>
           <img class="product-tile" src="${product.imageUrl}">
         </td>
-        <td>${product.description}</td>
+        <td>
+            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+            ${product.description}
+        </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+            <a href=""
+                onclick='window.open("${pageContext.servletContext.contextPath}/products/${product.id}/priceHistory", "_blank", "scrollbars=0,resizable=0,height=500,width=400");'>
+                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+            </a>
         </td>
       </tr>
     </c:forEach>

@@ -23,6 +23,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsWithResults() {
+        String s = "s" + "ds";
         assertFalse(productDao.findProducts("", null, null).isEmpty());
     }
 

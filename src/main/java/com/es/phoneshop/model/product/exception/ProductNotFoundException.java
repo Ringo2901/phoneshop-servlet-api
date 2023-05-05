@@ -6,4 +6,9 @@ public class ProductNotFoundException extends RuntimeException {
     public ProductNotFoundException(String exeptionMessage) {
         this.exeptionMessage = exeptionMessage;
     }
+
+    @Override
+    public String getMessage() {
+        return exeptionMessage;
+    }
 }

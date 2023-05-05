@@ -34,16 +34,20 @@ public class ArrayListProductDao implements ProductDao {
     public Product getProduct(Long id) {
         if (id != null) {
             readWriteLock.readLock().lock();
-            Product product = products.stream()
-                    .filter(product1 -> id.equals(product1.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException("Product with id = " + id + " was not found"));
-            readWriteLock.readLock().unlock();
-            return product;
+            try {
+                Product product = products.stream()
+                        .filter(product1 -> id.equals(product1.getId()))
+                        .findAny()
+                        .orElseThrow(() -> new ProductNotFoundException("Product with id = " + id + " was not found"));
+                return product;
+            } finally {
+                readWriteLock.readLock().unlock();
+            }
         } else {
             throw new IllegalArgumentException("Id is null");
         }
     }
+
 
     @Override
     public List<Product> findProducts(String query, SortField sort, SortOrder order) {

@@ -9,7 +9,6 @@ import jakarta.servlet.ServletContextListener;
 
 import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
     private ProductDao productDao;

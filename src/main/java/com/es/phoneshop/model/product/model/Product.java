@@ -36,7 +36,7 @@ public class Product {
         this.priceHistory = List.of(priceHistories);
     }
 
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl,PriceHistory... priceHistories) {
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, PriceHistory... priceHistories) {
         this.code = code;
         this.description = description;
         this.price = price;

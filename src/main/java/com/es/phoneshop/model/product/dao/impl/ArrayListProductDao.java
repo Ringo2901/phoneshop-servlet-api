@@ -6,11 +6,9 @@ import com.es.phoneshop.model.product.model.Product;
 import com.es.phoneshop.model.product.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.dao.ProductDao;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private static ProductDao instance;

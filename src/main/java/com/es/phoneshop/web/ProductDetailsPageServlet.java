@@ -12,6 +12,9 @@ import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
+    private static final String PRICE_HISTORY_PAGE = "/WEB-INF/pages/priceHistory.jsp";
+    private static final String PRODUCT_PAGE = "/WEB-INF/pages/productPage.jsp";
+    private static final String PRODUCTS_ATTRIBUTE = "products";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -22,13 +25,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getPathInfo().substring(1).contains("/")) {
-            request.setAttribute("product", productDao.getProduct(
+            request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getProduct(
                     Long.parseLong(request.getPathInfo().substring(1, request.getPathInfo().lastIndexOf('/')))));
-            request.getRequestDispatcher("/WEB-INF/pages/priceHistory.jsp").forward(request, response);
+            request.getRequestDispatcher(PRICE_HISTORY_PAGE).forward(request, response);
         } else {
-            request.setAttribute("product", productDao.getProduct(
+            request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getProduct(
                     Long.parseLong(request.getPathInfo().substring(1))));
-            request.getRequestDispatcher("/WEB-INF/pages/productPage.jsp").forward(request, response);
+            request.getRequestDispatcher(PRODUCT_PAGE).forward(request, response);
         }
     }
 }

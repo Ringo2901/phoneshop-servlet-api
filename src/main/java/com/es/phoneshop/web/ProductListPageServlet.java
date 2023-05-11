@@ -16,6 +16,11 @@ import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao;
+    private static final String QUERY_PARAMETER = "query";
+    private static final String SORT_PARAMETER = "sort";
+    private static final String ORDER_PARAMETER = "order";
+    private static final String PRODUCTS_ATTRIBUTE = "products";
+    private static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -25,11 +30,11 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts(
-                request.getParameter("query"),
-                Optional.ofNullable(request.getParameter("sort")).map(SortField::valueOf).orElse(null),
-                Optional.ofNullable(request.getParameter("order")).map(SortOrder::valueOf).orElse(null)));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.findProducts(
+                request.getParameter(QUERY_PARAMETER),
+                Optional.ofNullable(request.getParameter(SORT_PARAMETER)).map(SortField::valueOf).orElse(null),
+                Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null)));
+        request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
     }
 
 }

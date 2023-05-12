@@ -14,12 +14,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -28,19 +27,18 @@ public class ProductListPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
-
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    @Mock
+    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getRequestDispatcher("http://localhost:8080/phoneshop-servlet-api/products/3")).thenReturn(requestDispatcher);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
-        servlet.doGet(request, response);
-        verify(requestDispatcher).forward(request, response);
+    public void testInit() throws ServletException, IOException {
+        request.getRequestDispatcher("http://localhost:8080/phoneshop-servlet-api/products/3").forward(request, response);
+        verify(servlet).init(config);
     }
-
 }

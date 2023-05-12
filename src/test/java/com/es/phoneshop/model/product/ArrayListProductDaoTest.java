@@ -13,28 +13,28 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
     private ProductDao productDao;
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
     }
 
     @Test
     public void testFindProductsWithResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        String s = "s" + "ds";
+        assertFalse(productDao.findProducts("", null, null).isEmpty());
     }
 
     @Test
     public void testSaveProduct() {
-        Currency usd=Currency.getInstance("USD");
-        Product newProduct=new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Currency usd = Currency.getInstance("USD");
+        Product newProduct = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(newProduct);
-        assertTrue(newProduct.getId()>0);
-        Product testProduct=productDao.getProduct(newProduct.getId());
-        assertEquals(testProduct,newProduct);
+        assertTrue(newProduct.getId() > 0);
+        Product testProduct = productDao.getProduct(newProduct.getId());
+        assertEquals(testProduct, newProduct);
     }
 
     @Test
@@ -44,27 +44,27 @@ public class ArrayListProductDaoTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetWithNullId(){
+    public void testGetWithNullId() {
         productDao.getProduct(null);
     }
 
     @Test
-    public void testSaveWithOwnIdThatDoesNotExist()
-    {
-        Currency usd=Currency.getInstance("USD");
-        Product product = new Product(100L,"sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg");
+    public void testSaveWithOwnIdThatDoesNotExist() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product(100L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg");
         productDao.save(product);
-        assertEquals(product,productDao.getProduct(100L));
+        assertEquals(product, productDao.getProduct(100L));
     }
+
     @Test
     public void testUpdateProduct() {
-        Product productBeforeUpdate=productDao.getProduct(2L);
-        Product productAfterUpdate=productDao.getProduct(2L);
+        Product productBeforeUpdate = productDao.getProduct(2L);
+        Product productAfterUpdate = productDao.getProduct(2L);
         productAfterUpdate.setCode("0");
 
         productDao.save(productAfterUpdate);
 
-        assertEquals(productAfterUpdate.getId(),productBeforeUpdate.getId());
+        assertEquals(productAfterUpdate.getId(), productBeforeUpdate.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -80,20 +80,20 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testNotShowingProductWithZeroStock() {
-        Currency usd=Currency.getInstance("USD");
+        Currency usd = Currency.getInstance("USD");
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
 
-        List<Product> testList=productDao.findProducts();
+        List<Product> testList = productDao.findProducts("", null, null);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getStock() == 0));
     }
 
     @Test
     public void testNotShowingProductWithNullPrice() {
-        Currency usd=Currency.getInstance("USD");
+        Currency usd = Currency.getInstance("USD");
         productDao.save(new Product("simsxg75", "Siemens SXG75", null, usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
 
-        List<Product> testList=productDao.findProducts();
+        List<Product> testList = productDao.findProducts("", null, null);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getPrice() == null));
     }

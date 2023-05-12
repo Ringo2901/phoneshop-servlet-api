@@ -24,7 +24,6 @@ public class Product {
 
     }
 
-
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, PriceHistory... priceHistories) {
         this.id = id;
         this.code = code;

@@ -24,6 +24,7 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String ORDER_PARAMETER = "order";
     private static final String PRODUCTS_ATTRIBUTE = "products";
     private static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
+    private static final String CART_ATTRIBUTE = "cart";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -38,7 +39,7 @@ public class ProductListPageServlet extends HttpServlet {
                 request.getParameter(QUERY_PARAMETER),
                 Optional.ofNullable(request.getParameter(SORT_PARAMETER)).map(SortField::valueOf).orElse(null),
                 Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null)));
-        request.setAttribute("cart",cartService.getCart(request));
+        request.setAttribute(CART_ATTRIBUTE,cartService.getCart(request));
         request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
     }
 

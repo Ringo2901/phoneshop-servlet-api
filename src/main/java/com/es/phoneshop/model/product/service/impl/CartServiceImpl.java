@@ -12,8 +12,9 @@ import jakarta.servlet.http.HttpSession;
 
 public class CartServiceImpl implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
-    private static CartServiceImpl instance;
+    private static volatile CartServiceImpl instance;
     private ProductDao productDao;
+    private int cartId = 0;
 
     public static CartServiceImpl getInstance() {
         if (instance == null) {
@@ -36,7 +37,7 @@ public class CartServiceImpl implements CartService {
         synchronized (currentSession) {
             Cart cart = (Cart) currentSession.getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
-                cart = new Cart();
+                cart = new Cart(cartId++);
                 currentSession.setAttribute(CART_SESSION_ATTRIBUTE, cart);
             }
             return cart;

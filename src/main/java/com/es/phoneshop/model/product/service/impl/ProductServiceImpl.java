@@ -11,7 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ProductServiceImpl implements ProductService {
-    private static ProductServiceImpl instance;
+    private static volatile ProductServiceImpl instance;
+    private static final String RECENT_PRODUCTS_ATTRIBUTE = "recentProducts";
     private Set<Product> recentProducts;
 
     public static ProductServiceImpl getInstance() {
@@ -56,6 +57,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void setRecentProductsInSession(HttpServletRequest request, Set<Product> products) {
         HttpSession currentSession = request.getSession();
-        currentSession.setAttribute("recentProducts", products);
+        currentSession.setAttribute(RECENT_PRODUCTS_ATTRIBUTE, products);
     }
 }

@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance;
+    private static volatile ProductDao instance;
     private List<Product> products;
     private long currentId = 1;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();

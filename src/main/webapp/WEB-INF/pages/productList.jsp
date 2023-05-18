@@ -8,6 +8,9 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <p>
+    ${cart}
+  </p>
   <form>
       <input name="query" value="${param.query}">
       <button>Search</button>
@@ -46,4 +49,7 @@
       </tr>
     </c:forEach>
   </table>
+  <p>
+    <tags:recentlyView products="$(recentProducts}"/>
+  </p>
 </tags:master>

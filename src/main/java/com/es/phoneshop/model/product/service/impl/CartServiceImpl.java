@@ -10,6 +10,9 @@ import com.es.phoneshop.model.product.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 public class CartServiceImpl implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
     private static volatile CartServiceImpl instance;
@@ -47,22 +50,21 @@ public class CartServiceImpl implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
         HttpSession currentSession = request.getSession();
+        Optional<CartItem> productMatch;
         synchronized (currentSession) {
             Product product = productDao.getProduct(productId);
             if (countingQuantityIncludingCart(cart, product) < quantity) {
                 throw new OutOfStockException(product, quantity, product.getStock());
             }
-            CartItem productMatch = cart.getItems().stream()
-                    .filter(currProduct -> currProduct.getProduct().equals(product))
-                    .findFirst()
-                    .orElse(null);
-            if (productMatch != null) {
-                int index = cart.getItems().indexOf(productMatch);
-                CartItem item = cart.getItems().get(index);
-                item.setQuantity(item.getQuantity() + quantity);
+            if ((productMatch = getCartItemMatch(cart, product)).isPresent()) {
+                cart.getItems().
+                        get(cart.getItems().indexOf(productMatch.get())).
+                        setQuantity(productMatch.get().getQuantity() + quantity);
             } else {
                 cart.getItems().add(new CartItem(product, quantity));
+                currentSession.setAttribute("cart", cart);
             }
+            reCalculateCart(cart);
         }
     }
 
@@ -75,6 +77,54 @@ public class CartServiceImpl implements CartService {
                 .orElse(0);
         result -= quantityInCart;
         return result;
+    }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
+        HttpSession currentSession = request.getSession();
+        synchronized (currentSession) {
+            Product product = productDao.getProduct(productId);
+            if (quantity > product.getStock()) {
+                throw new OutOfStockException(product, quantity, product.getStock());
+            }
+            getCartItemMatch(cart, product).ifPresent(cartItem -> cart.getItems().
+                    get(cart.getItems().indexOf(cartItem)).
+                    setQuantity(quantity));
+            reCalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId, HttpServletRequest request) {
+        HttpSession currentSession = request.getSession();
+        synchronized (currentSession) {
+            Product product = productDao.getProduct(productId);
+            cart.getItems().removeIf(item -> productId.equals(item.getProduct().getId()));
+            reCalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void reCalculateCart(Cart cartToRecalculate) {
+        BigDecimal totalCost = BigDecimal.ZERO;
+        cartToRecalculate.setTotalItems(
+                cartToRecalculate.getItems().stream().
+                        map(CartItem::getQuantity).
+                        mapToInt(q -> q).
+                        sum()
+        );
+        for (CartItem item : cartToRecalculate.getItems()) {
+            totalCost = totalCost.add(
+                    item.getProduct().getPrice().
+                            multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        cartToRecalculate.setTotalCost(totalCost);
+    }
+
+    private Optional<CartItem> getCartItemMatch(Cart cart, Product product) {
+        return cart.getItems().stream().
+                filter(currProduct -> currProduct.getProduct().getId().equals(product.getId())).
+                findAny();
     }
 
 }

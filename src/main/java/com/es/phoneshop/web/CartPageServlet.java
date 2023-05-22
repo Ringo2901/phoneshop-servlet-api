@@ -19,6 +19,10 @@ import java.util.Map;
 public class CartPageServlet extends HttpServlet {
     private CartService cartService;
     private ProductService productService;
+    private static final String PRODUCT_ID_ATTRIBUTE = "productId";
+    private static final String CART_JSP = "/WEB-INF/pages/cart.jsp";
+    private static final String QUANTITY_ATTRIBUTE = "quantity";
+    private static final String ERROR_ATTRIBUTE = "inputErrors";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -29,13 +33,13 @@ public class CartPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
+        request.getRequestDispatcher(CART_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String[] productIds = request.getParameterValues("productId");
-        String[] quantities = request.getParameterValues("quantity");
+        String[] productIds = request.getParameterValues(PRODUCT_ID_ATTRIBUTE);
+        String[] quantities = request.getParameterValues(QUANTITY_ATTRIBUTE);
 
         Map<Long, String> inputErrors = new HashMap<>();
 
@@ -57,7 +61,7 @@ public class CartPageServlet extends HttpServlet {
             }
         }
         if (!inputErrors.isEmpty()) {
-            request.setAttribute("inputErrors", inputErrors);
+            request.setAttribute(ERROR_ATTRIBUTE, inputErrors);
             doGet(request, response);
         } else {
             response.sendRedirect(String.format("%s/cart?message=Cart was successfully updated!", request.getContextPath()));

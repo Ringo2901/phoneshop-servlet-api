@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product.cart;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Cart implements Serializable {
+    private static final long serialVersionUID = 1L;
     private List<CartItem> items;
     private int cartId;
     private int totalItems;

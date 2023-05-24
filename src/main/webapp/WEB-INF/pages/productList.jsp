@@ -8,6 +8,16 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+      <c:choose>
+          <c:when test="${not empty sessionScope.inputError}">
+              <p class="error">There were some problems adding item to the cart!</p>
+          </c:when>
+          <c:otherwise>
+              <c:if test="${not empty param.message}">
+                  <p class="success">${param.message}</p>
+              </c:if>
+          </c:otherwise>
+      </c:choose>
   <form>
       <input name="query" value="${param.query}">
       <button>Search</button>

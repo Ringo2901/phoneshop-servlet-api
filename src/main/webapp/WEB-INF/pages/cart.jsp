@@ -25,13 +25,9 @@
                 <td>Image</td>
             <td>
                 Description
-                <tags:sortLinkUp sort="DESCRIPTION" order="ASC"/>
-                <tags:sortLinkDown sort="DESCRIPTION" order="DESC"/>
             </td>
             <td class="price">
                 Price
-                <tags:sortLinkUp sort="PRICE" order="ASC"/>
-                <tags:sortLinkDown sort="PRICE" order="DESC"/>
             </td>
                 <td class="quantity">
                     Quantity

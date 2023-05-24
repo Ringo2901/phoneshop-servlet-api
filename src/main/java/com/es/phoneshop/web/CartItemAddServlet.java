@@ -24,8 +24,8 @@ public class CartItemAddServlet extends HttpServlet {
     private ProductService productService;
     private ProductDao productDao;
     private static final String QUANTITY_ATTRIBUTE = "quantity";
-    private static final String ERROR_ATTRIBUTE = "inputErrors";
-    private static final String ENTERED_QUANTITY_ATTRIBUTE = "quantity";
+    private static final String ERROR_ATTRIBUTE = "inputError";
+    private static final String ENTERED_QUANTITY_ATTRIBUTE = "enteredQuantity";
 
     @Override
     public void init(ServletConfig config) throws ServletException {

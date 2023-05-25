@@ -1,6 +1,6 @@
 package com.es.phoneshop.service;
 
-import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.model.Cart;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.product.model.PriceHistory;
@@ -43,7 +43,7 @@ public class CartServiceImplTest {
 
     @Test
     public void testAddingProductToCart() throws OutOfStockException {
-        Cart cart = new Cart(1);
+        Cart cart = new Cart();
         Assert.assertTrue(cart.getItems().isEmpty());
         cartService.add(cart, 1L,34, requestMock);
         Assert.assertFalse(cart.getItems().isEmpty());
@@ -57,7 +57,7 @@ public class CartServiceImplTest {
     }
     @Test
     public void testAddingSameProductsIncreaseQuantityOfSameProduct() throws OutOfStockException {
-        Cart cart = new Cart(1);
+        Cart cart = new Cart();
         cartService.add(cart, 1L,10, requestMock);
         cartService.add(cart, 1L,5, requestMock);
 

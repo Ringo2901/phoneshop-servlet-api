@@ -1,30 +1,28 @@
-package com.es.phoneshop.model.product.cart;
+package com.es.phoneshop.model.product.model;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Cart implements Serializable {
+public class Cart extends  Entity implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<CartItem> items;
     private int cartId;
     private int totalItems;
     private BigDecimal totalCost;
 
-    public Cart(int cartId) {
+    public Cart() {
         items = new ArrayList<>();
-        this.cartId = cartId;
-    }
-
-    public Cart(){
-
     }
 
     public List<CartItem> getItems() {
         return items;
+    }
+
+    public void setItems(List<CartItem> items) {
+        this.items = items;
     }
 
     public int getCartId() {

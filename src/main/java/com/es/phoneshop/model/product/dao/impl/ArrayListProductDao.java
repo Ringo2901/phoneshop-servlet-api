@@ -1,29 +1,30 @@
 package com.es.phoneshop.model.product.dao.impl;
 
+import com.es.phoneshop.model.product.dao.EntityDao;
 import com.es.phoneshop.model.product.enums.SortField;
 import com.es.phoneshop.model.product.enums.SortOrder;
 import com.es.phoneshop.model.product.model.Product;
 import com.es.phoneshop.model.product.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.service.impl.CartServiceImpl;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends EntityDao<Product> implements ProductDao {
     private static volatile ProductDao instance;
-    private List<Product> products;
-    private long currentId = 1;
+    private long currentMaxId = 1;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
 
     private ArrayListProductDao() {
-        products = new ArrayList<Product>();
+        entities = new ArrayList<>();
     }
 
     public static ProductDao getInstance() {
         if (instance == null) {
-            synchronized (ArrayListProductDao.class) {
+            synchronized (ProductDao.class) {
                 if (instance == null) {
                     instance = new ArrayListProductDao();
                 }
@@ -32,30 +33,12 @@ public class ArrayListProductDao implements ProductDao {
         return instance;
     }
 
-    @Override
-    public Product getProduct(Long id) {
-        if (id != null) {
-            readWriteLock.readLock().lock();
-            try {
-                Product product = products.stream()
-                        .filter(product1 -> id.equals(product1.getId()))
-                        .findAny()
-                        .orElseThrow(() -> new ProductNotFoundException("Product with id = " + id + " was not found"));
-                return product;
-            } finally {
-                readWriteLock.readLock().unlock();
-            }
-        } else {
-            throw new IllegalArgumentException("Id is null");
-        }
-    }
-
 
     @Override
     public List<Product> findProducts(String query, SortField sort, SortOrder order) {
         readWriteLock.readLock().lock();
         try {
-            List<Product> result = products.stream()
+            List<Product> result = entities.stream()
                     .filter(Objects::nonNull)
                     .filter(product -> query == null || query.isEmpty() || isContainAnyWord(query, product.getDescription()))
                     .sorted((p1, p2) -> {
@@ -89,26 +72,9 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) {
-        readWriteLock.writeLock().lock();
-        try {
-            if (product.getId() != null) {
-                products.stream()
-                        .filter(product1 -> product1.getId().equals(product.getId()))
-                        .findAny()
-                        .ifPresentOrElse(product1 -> {
-                                    products.set(products.indexOf(product1), product);
-                                },
-                                () -> {
-                                    products.add(product);
-                                });
-            } else {
-                product.setId(currentId++);
-                products.add(product);
-            }
-        } finally {
-            readWriteLock.writeLock().unlock();
-        }
+    protected final void addNewEntity(Product entity, List<Product> entities) {
+        entity.setId(currentMaxId++);
+        entities.add(entity);
     }
 
     @Override
@@ -116,7 +82,7 @@ public class ArrayListProductDao implements ProductDao {
         if (id != null) {
             readWriteLock.writeLock().lock();
             try {
-                products.removeIf(product -> id.equals(product.getId()));
+                entities.removeIf(product -> id.equals(product.getId()));
             } finally {
                 readWriteLock.writeLock().unlock();
             }

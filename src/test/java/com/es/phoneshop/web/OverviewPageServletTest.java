@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
-import com.es.phoneshop.model.product.model.Product;
+import com.es.phoneshop.model.product.dao.OrderDao;
+import com.es.phoneshop.model.product.dao.impl.ArrayListOrderDao;
+import com.es.phoneshop.model.product.model.Order;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MiniCartServletTest {
+public class OverviewPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -36,26 +34,25 @@ public class MiniCartServletTest {
     private ServletConfig config;
     @Mock
     private HttpSession session;
-    private final MiniCartServlet servlet = new MiniCartServlet();
+    private OrderDao orderDao;
+    private final OverviewPageServlet servlet = new OverviewPageServlet();
 
     @Before
     public void setup() throws ServletException {
-        ProductDao productDao = ArrayListProductDao.getInstance();
-        Currency currency = Currency.getInstance("USD");
-        Product product = new Product("test", "HTC EVO Shift 4G", new BigDecimal(320), currency, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
-        productDao.save(product);
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        when(request.getSession()).thenReturn(session);
-
+        orderDao = ArrayListOrderDao.getInstance();
+        Order orderTest = new Order();
+        orderTest.setSecureId("1a-2");
+        orderDao.save(orderTest);
+        when(request.getPathInfo()).thenReturn("/1a-2");
     }
 
 
     @Test
     public void testDoGet() throws IOException, ServletException {
         servlet.doGet(request, response);
-        verify(requestDispatcher).include(request, response);
-        verify(request).setAttribute(eq("cart"), any());
+        verify(request).setAttribute(eq("order"), any());
     }
 
 }

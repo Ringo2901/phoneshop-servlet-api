@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.model.Cart;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.product.exception.OutOfStockException;
@@ -29,6 +29,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private static final String ERROR_ATTRIBUTE = "error";
     private static final String QUANTITY_PARAMETER = "quantity";
     private static final String ERROR_NOT_A_NUMBER = "Not a number!";
+    private static final String ERROR_MESSAGE = "No such product with given code";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -41,10 +42,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getPathInfo().substring(1).contains("/")) {
-            request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getProduct(productService.parseIdWithHistory(request)));
+            request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getEntity(productService.parseIdWithHistory(request), ERROR_MESSAGE));
             request.getRequestDispatcher(PRICE_HISTORY_PAGE).forward(request, response);
         } else {
-            Product product = productDao.getProduct(productService.parseIdWithoutHistory(request));
+            Product product = productDao.getEntity(productService.parseIdWithoutHistory(request), ERROR_MESSAGE);
             request.setAttribute(PRODUCTS_ATTRIBUTE, product);
             productService.addProductToRecentProducts(product, request);
             request.getRequestDispatcher(PRODUCT_PAGE).forward(request, response);
@@ -74,7 +75,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=&error=Not enough items in stock! Available: " + e.getAvailableStock());
             return;
         }
-        request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getProduct(productId));
+        request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.getEntity(productId, ERROR_MESSAGE));
         response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Product was added to cart successfully!");
     }
 }

@@ -1,8 +1,10 @@
 package com.es.phoneshop.model.product.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PriceHistory {
+public class PriceHistory implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String date;
     private BigDecimal price;
 

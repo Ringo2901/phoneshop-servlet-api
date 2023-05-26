@@ -6,6 +6,7 @@ import com.es.phoneshop.model.product.model.Order;
 import com.es.phoneshop.model.product.model.Product;
 import com.es.phoneshop.model.product.service.OrderService;
 import com.es.phoneshop.model.product.service.impl.OrderServiceImpl;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,11 @@ public class OrderServiceImplTest {
             Assert.assertEquals(order.getItems().get(i).getProduct(), cart.getItems().get(i).getProduct());
             Assert.assertEquals(order.getItems().get(i).getQuantity(), cart.getItems().get(i).getQuantity());
         }
+    }
+
+    @After
+    public void clean() {
+        orderService = null;
     }
 }
 

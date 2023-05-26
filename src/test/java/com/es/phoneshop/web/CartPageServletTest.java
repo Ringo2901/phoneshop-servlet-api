@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.model.product.exception.EntityNotFoundException;
 import com.es.phoneshop.model.product.model.PriceHistory;
 import com.es.phoneshop.model.product.model.Product;
 import jakarta.servlet.RequestDispatcher;
@@ -10,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,7 @@ public class CartPageServletTest {
     private HttpSession session;
 
     private final CartPageServlet servlet = new CartPageServlet();
+    private ProductDao productDao;
 
     @Before
     public void setup() throws ServletException {
@@ -49,7 +52,8 @@ public class CartPageServletTest {
 
         Currency currency = Currency.getInstance("USD");
         Product product = new Product("test", "HTC EVO Shift 4G", new BigDecimal(320), currency, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
-        ArrayListProductDao.getInstance().save(product);
+        productDao = ArrayListProductDao.getInstance();
+        productDao.save(product);
     }
 
     @Test
@@ -60,5 +64,8 @@ public class CartPageServletTest {
         verify(requestDispatcher).forward(request, response);
     }
 
-
+    @After
+    public void clean() {
+        productDao = null;
+    }
 }

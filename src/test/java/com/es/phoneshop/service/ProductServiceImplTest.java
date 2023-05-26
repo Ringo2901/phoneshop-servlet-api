@@ -3,6 +3,7 @@ package com.es.phoneshop.service;
 import com.es.phoneshop.model.product.service.ProductService;
 import com.es.phoneshop.model.product.service.impl.ProductServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,5 +28,10 @@ public class ProductServiceImplTest {
         Mockito.when(requestMock.getPathInfo()).thenReturn("/3");
         Long testId = productService.parseIdWithoutHistory(requestMock);
         Assert.assertEquals(3L, (long) testId);
+    }
+
+    @After
+    public void clean() {
+        productService = null;
     }
 }

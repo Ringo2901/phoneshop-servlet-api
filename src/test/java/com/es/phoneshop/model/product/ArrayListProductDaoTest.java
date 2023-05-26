@@ -5,6 +5,7 @@ import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.exception.EntityNotFoundException;
 import com.es.phoneshop.model.product.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.model.Product;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,5 +100,10 @@ public class ArrayListProductDaoTest {
         List<Product> testList = productDao.findProducts("", null, null);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getPrice() == null));
+    }
+
+    @After
+    public void clean() {
+        productDao = null;
     }
 }

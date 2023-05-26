@@ -84,11 +84,13 @@
             </c:if>
         </p>
     </form>
+     <c:if test="${not empty cart.items}">
         <form action="${pageContext.servletContext.contextPath}/checkout">
             <button>
                 Checkout
             </button>
         </form>
+    </c:if>
     <p>
         <tags:recentlyView products="${recentProducts}"/>
     </p>

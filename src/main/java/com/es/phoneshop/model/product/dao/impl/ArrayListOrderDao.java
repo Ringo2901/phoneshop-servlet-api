@@ -36,7 +36,7 @@ public class ArrayListOrderDao extends EntityDao<Order> implements OrderDao {
     }
 
     @Override
-    public Order getOrderBySecureId(String secureId) throws OrderNotFoundException {
+    public Order getOrderBySecureId(String secureId) {
         if (secureId == null) {
             throw new IllegalArgumentException("Parameter id is null");
         }

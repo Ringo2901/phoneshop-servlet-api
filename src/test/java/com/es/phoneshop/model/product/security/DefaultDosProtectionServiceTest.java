@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product.security;
 
-import com.es.phoneshop.model.product.security.impl.DefaultDosProtectionService;
+import com.es.phoneshop.model.product.service.security.impl.DefaultDosProtectionService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,7 +27,8 @@ public class DefaultDosProtectionServiceTest {
 
     @Test
     public void testAddingProductToCart() {
-        defaultDosProtectionService.isAllowed(requestMock.getRemoteAddr());
-        Assert.assertTrue(defaultDosProtectionService.getRequestsMap().containsKey(requestMock.getRemoteAddr()));
+        String ipAddress = requestMock.getRemoteAddr();
+        defaultDosProtectionService.isAllowed(ipAddress);
+        Assert.assertTrue(defaultDosProtectionService.getIpInfoMap().containsKey(ipAddress));
     }
 }

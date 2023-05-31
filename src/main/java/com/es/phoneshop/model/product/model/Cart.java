@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Cart extends  Entity implements Serializable {
+public class Cart extends  Entity {
     private static final long serialVersionUID = 1L;
     private List<CartItem> items;
     private int cartId;

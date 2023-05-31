@@ -9,6 +9,7 @@ import com.es.phoneshop.model.product.service.CartService;
 import com.es.phoneshop.model.product.service.OrderService;
 import com.es.phoneshop.model.product.model.Order;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final String DELIVERY_DATE_REQUEST_PARAMETER = "deliveryDate";
     private final String PAYMENT_METHOD_REQUEST_PARAMETER = "paymentMethod";
     private final String PHONE_VALIDATION_REG_EXP = "^(\\+375)(29|25|44|33)(\\d{3})(\\d{2})(\\d{2})$";
+    private static final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
 
 
     private OrderDao orderDao;
@@ -141,9 +143,8 @@ public class OrderServiceImpl implements OrderService {
         orderToPlace.setSecureId(String.valueOf(UUID.randomUUID()));
         orderDao.save(orderToPlace);
 
-        Cart currentCart = cartService.getCart(request);
-        currentCart.getItems().clear();
-        cartService.reCalculateCart(currentCart);
+        HttpSession session = request.getSession();
+        session.removeAttribute(CART_SESSION_ATTRIBUTE);
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product extends Entity implements Serializable {
+public class Product extends Entity{
     private static final long serialVersionUID = 1L;
     private String code;
     private String description;

@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product.model;
 
+import com.es.phoneshop.model.product.exception.CloneException;
 import com.es.phoneshop.model.product.model.Product;
 
 import java.io.Serializable;
@@ -41,7 +42,7 @@ public class CartItem implements Serializable, Cloneable {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause());
+            throw new CloneException("Error copying the product " + product.getCode() + "with quantity" + quantity);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.es.phoneshop.web.filter;
 
-import com.es.phoneshop.model.product.security.DosProtectionService;
-import com.es.phoneshop.model.product.security.impl.DefaultDosProtectionService;
+import com.es.phoneshop.model.product.service.security.DosProtectionService;
+import com.es.phoneshop.model.product.service.security.impl.DefaultDosProtectionService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 

@@ -6,9 +6,8 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product implements Serializable {
+public class Product extends Entity{
     private static final long serialVersionUID = 1L;
-    private Long id;
     private String code;
     private String description;
     /**
@@ -55,14 +54,6 @@ public class Product implements Serializable {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {

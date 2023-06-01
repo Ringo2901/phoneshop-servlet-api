@@ -26,6 +26,8 @@ public class CartItemAddServlet extends HttpServlet {
     private static final String QUANTITY_ATTRIBUTE = "quantity";
     private static final String ERROR_ATTRIBUTE = "inputError";
     private static final String ENTERED_QUANTITY_ATTRIBUTE = "enteredQuantity";
+    private static final String ERROR_MESSAGE = "No such product with given code";
+
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -62,7 +64,7 @@ public class CartItemAddServlet extends HttpServlet {
             request.getSession().setAttribute(ERROR_ATTRIBUTE, inputError);
             response.sendRedirect(String.format("%s/products?message=%s was successfully added to the cart!",
                     request.getContextPath(),
-                    productDao.getProduct(productId).getDescription()));
+                    productDao.getEntity(productId,ERROR_MESSAGE).getDescription()));
         } else {
             request.getSession().setAttribute(ENTERED_QUANTITY_ATTRIBUTE, request.getParameter(QUANTITY_ATTRIBUTE));
             response.sendRedirect(String.format("%s/products", request.getContextPath()));

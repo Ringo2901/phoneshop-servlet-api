@@ -1,7 +1,7 @@
 package com.es.phoneshop.model.product.service.impl;
 
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartItem;
+import com.es.phoneshop.model.product.model.Cart;
+import com.es.phoneshop.model.product.model.CartItem;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.product.exception.OutOfStockException;
@@ -16,8 +16,8 @@ import java.util.Optional;
 public class CartServiceImpl implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
     private static volatile CartServiceImpl instance;
+    private String ERROR_MESSAGE = "No such product with given code";
     private ProductDao productDao;
-    private int cartId = 0;
 
     public static CartServiceImpl getInstance() {
         if (instance == null) {
@@ -40,8 +40,11 @@ public class CartServiceImpl implements CartService {
         synchronized (currentSession) {
             Cart cart = (Cart) currentSession.getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
-                cart = new Cart(cartId++);
+                cart = new Cart();
                 currentSession.setAttribute(CART_SESSION_ATTRIBUTE, cart);
+            }
+            if (cart.getTotalCost() == null) {
+                cart.setTotalCost(BigDecimal.ZERO);
             }
             return cart;
         }
@@ -52,7 +55,7 @@ public class CartServiceImpl implements CartService {
         HttpSession currentSession = request.getSession();
         Optional<CartItem> productMatch;
         synchronized (currentSession) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.getEntity(productId, ERROR_MESSAGE);
             if (countingQuantityIncludingCart(cart, product) < quantity) {
                 throw new OutOfStockException(product, quantity, product.getStock());
             }
@@ -83,7 +86,7 @@ public class CartServiceImpl implements CartService {
     public void update(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
         HttpSession currentSession = request.getSession();
         synchronized (currentSession) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.getEntity(productId, ERROR_MESSAGE);
             if (quantity > product.getStock()) {
                 throw new OutOfStockException(product, quantity, product.getStock());
             }
@@ -98,7 +101,7 @@ public class CartServiceImpl implements CartService {
     public void delete(Cart cart, Long productId, HttpServletRequest request) {
         HttpSession currentSession = request.getSession();
         synchronized (currentSession) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.getEntity(productId, ERROR_MESSAGE);
             cart.getItems().removeIf(item -> productId.equals(item.getProduct().getId()));
             reCalculateCart(cart);
         }

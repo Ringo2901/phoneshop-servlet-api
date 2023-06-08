@@ -22,6 +22,9 @@
       <input name="query" value="${param.query}">
       <button>Search</button>
   </form>
+  <form method="get" action="${pageContext.servletContext.contextPath}/products/advancedSearch">
+        <button> Advanced search </button>
+  </form>
   <table>
     <thead>
       <tr>

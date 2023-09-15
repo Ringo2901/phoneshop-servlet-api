@@ -28,7 +28,7 @@ public class ArrayListProductDaoTest {
     @Test
     public void testFindProductsWithResults() {
         String s = "s" + "ds";
-        assertFalse(productDao.findProducts("", null, null).isEmpty());
+        assertFalse(productDao.findProducts("", null, null, false).isEmpty());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ArrayListProductDaoTest {
         Currency usd = Currency.getInstance("USD");
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
 
-        List<Product> testList = productDao.findProducts("", null, null);
+        List<Product> testList = productDao.findProducts("", null, null, false);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getStock() == 0));
     }
@@ -97,7 +97,7 @@ public class ArrayListProductDaoTest {
         Currency usd = Currency.getInstance("USD");
         productDao.save(new Product("simsxg75", "Siemens SXG75", null, usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
 
-        List<Product> testList = productDao.findProducts("", null, null);
+        List<Product> testList = productDao.findProducts("", null, null, false);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getPrice() == null));
     }

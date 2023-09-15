@@ -38,8 +38,8 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.findProducts(
                 request.getParameter(QUERY_PARAMETER),
                 Optional.ofNullable(request.getParameter(SORT_PARAMETER)).map(SortField::valueOf).orElse(null),
-                Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null)));
-        request.setAttribute(CART_ATTRIBUTE,cartService.getCart(request));
+                Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null), false));
+        request.setAttribute(CART_ATTRIBUTE, cartService.getCart(request));
         request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
     }
 
